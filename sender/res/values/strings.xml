@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DashBoard</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="media_route_menu_title">Play on&#8230;</string>
+    
+    <string name="not_connected">Not connected</string>
+    <string name="connecting">Connecting...</string>
+    <string name="send">Send it!</string>
+    <string name="message">Hi~</string>
+    <string name="hint">Your message...</string>
+    <string name="user">User Name: </string>
+    <string name="username_hint">Your name...</string>
+
+    <string name="not_connected_hint">Please connect to your dongle...</string>
+    <string name="action_stop">Stop Receiver Application!</string>
+    <string name="me">me</string>
+</resources>

@@ -1,0 +1,74 @@
+body {
+    font-family:"FontAwesome";
+    background:#000 url(images/bg_default.png) no-repeat;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    color: #bababa;
+    font-size: 30px;  
+    width: 100%;
+    height: 100%;
+}
+
+.main {margin: 3% 7% 0;}
+
+.split_line {
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background:#000 url(images/line.png) no-repeat center top;  
+    position:fixed;
+    z-index: -100
+}
+#top_split_line {
+}
+
+#bottom_split_line {
+   bottom:90px;
+}
+
+#user_title {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 50px;
+}
+
+#users {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 36px;
+}
+
+#text_container {
+  text-align: left;
+  width: 100%;
+  height: 80px;
+  border: 0px solid #333;
+  overflow: hidden;
+}
+
+#system_info {
+    margin-top: 10px;
+    position:fixed;
+    width: 100%;
+    height: 90px;
+    bottom: 0;
+    font-size: 36px;
+    overflow: hidden;
+}
+
+#text_message {
+    width:100%;
+    height:40px;
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+
+#text_container li {
+    width:100%;
+    height:40px;
+    line-height:40px;
+    overflow:hidden;
+}

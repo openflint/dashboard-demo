@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DashBoard</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="media_route_menu_title">Play on&#8230;</string>
+    
+    <string name="not_connected">未连接</string>
+    <string name="connecting">连接中...</string>
+    <string name="send">发送</string>
+    <string name="message">你好～</string>
+    <string name="hint">请输入消息</string>
+	<string name="user">用户名：</string>
+	<string name="username_hint">请输入用户名</string>
+	<string name="not_connected_hint">请连接设备。。。</string>
+	<string name="action_stop">停止Receiver程序</string>
+	<string name="me">我</string>
+</resources>
