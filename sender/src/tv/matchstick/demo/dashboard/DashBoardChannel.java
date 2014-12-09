@@ -1,16 +1,32 @@
+/*
+ * Copyright (C) 2013-2014, The OpenFlint Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS-IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package tv.matchstick.demo.dashboard;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tv.matchstick.fling.Fling;
-import tv.matchstick.fling.FlingDevice;
-import tv.matchstick.fling.FlingManager;
-import tv.matchstick.fling.ResultCallback;
-import tv.matchstick.fling.Status;
+import tv.matchstick.flint.Flint;
+import tv.matchstick.flint.FlintDevice;
+import tv.matchstick.flint.FlintManager;
+import tv.matchstick.flint.ResultCallback;
+import tv.matchstick.flint.Status;
 import android.util.Log;
 
-public abstract class DashBoardChannel implements Fling.MessageReceivedCallback {
+public abstract class DashBoardChannel implements Flint.MessageReceivedCallback {
     private static final String TAG = DashBoardChannel.class.getSimpleName();
 
     private static final String DASHBOARD_NAMESPACE = "urn:flint:tv.matchstick.demo.dashboard";
@@ -34,7 +50,7 @@ public abstract class DashBoardChannel implements Fling.MessageReceivedCallback 
         return DASHBOARD_NAMESPACE;
     }
 
-    public final void show(FlingManager apiClient, String user, String info) {
+    public final void show(FlintManager apiClient, String user, String info) {
         try {
             Log.d(TAG, "show: " + info);
             JSONObject payload = new JSONObject();
@@ -47,7 +63,7 @@ public abstract class DashBoardChannel implements Fling.MessageReceivedCallback 
         }
     }
 
-    public final void join(FlingManager apiClient, String user) {
+    public final void join(FlintManager apiClient, String user) {
         try {
             Log.d(TAG, "join: " + user);
             JSONObject payload = new JSONObject();
@@ -62,7 +78,7 @@ public abstract class DashBoardChannel implements Fling.MessageReceivedCallback 
     /**
      * Sends a command to leave the current game.
      */
-    public final void leave(FlingManager apiClient, String user) {
+    public final void leave(FlintManager apiClient, String user) {
         try {
             Log.d(TAG, "leave");
             JSONObject payload = new JSONObject();
@@ -75,16 +91,16 @@ public abstract class DashBoardChannel implements Fling.MessageReceivedCallback 
     }
 
     @Override
-    public void onMessageReceived(FlingDevice flingDevice, String namespace,
+    public void onMessageReceived(FlintDevice flingDevice, String namespace,
             String message) {
         Log.d(TAG, "onTextMessageReceived: " + message);
 
     }
 
-    private final void sendMessage(FlingManager apiClient, String message) {
+    private final void sendMessage(FlintManager apiClient, String message) {
         Log.d(TAG, "Sending message: (ns=" + DASHBOARD_NAMESPACE + ") "
                 + message);
-        Fling.FlingApi.sendMessage(apiClient, DASHBOARD_NAMESPACE, message)
+        Flint.FlintApi.sendMessage(apiClient, DASHBOARD_NAMESPACE, message)
                 .setResultCallback(new SendMessageResultCallback(message));
     }
 

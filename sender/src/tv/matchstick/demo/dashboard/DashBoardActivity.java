@@ -1,18 +1,34 @@
+/*
+ * Copyright (C) 2013-2014, The OpenFlint Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS-IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package tv.matchstick.demo.dashboard;
 
 import java.io.IOException;
 
 import org.json.JSONObject;
 
-import tv.matchstick.fling.ApplicationMetadata;
-import tv.matchstick.fling.ConnectionResult;
-import tv.matchstick.fling.Fling;
-import tv.matchstick.fling.Fling.ApplicationConnectionResult;
-import tv.matchstick.fling.FlingDevice;
-import tv.matchstick.fling.FlingManager;
-import tv.matchstick.fling.FlingMediaControlIntent;
-import tv.matchstick.fling.ResultCallback;
-import tv.matchstick.fling.Status;
+import tv.matchstick.flint.ApplicationMetadata;
+import tv.matchstick.flint.ConnectionResult;
+import tv.matchstick.flint.Flint;
+import tv.matchstick.flint.Flint.ApplicationConnectionResult;
+import tv.matchstick.flint.FlintDevice;
+import tv.matchstick.flint.FlintManager;
+import tv.matchstick.flint.FlintMediaControlIntent;
+import tv.matchstick.flint.ResultCallback;
+import tv.matchstick.flint.Status;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -43,11 +59,10 @@ public class DashBoardActivity extends ActionBarActivity {
     private EditText mUserBox;
     private TextView mDashBoardMsgView;
 
-    private FlingDevice mSelectedDevice;
-    private FlingManager mApiClient;
-    private Fling.Listener mFlingListener;
+    private FlintDevice mSelectedDevice;
+    private FlintManager mApiClient;
+    private Flint.Listener mFlingListener;
     private ConnectionCallbacks mConnectionCallbacks;
-    private ConnectionFailedListener mConnectionFailedListener;
     private MediaRouter mMediaRouter;
     private MediaRouteSelector mMediaRouteSelector;
     private MediaRouter.Callback mMediaRouterCallback;
@@ -77,21 +92,20 @@ public class DashBoardActivity extends ActionBarActivity {
         mContext = this;
 
         String APPLICATION_ID = "~dashboard";
-        Fling.FlingApi.setApplicationId(APPLICATION_ID);
+        Flint.FlintApi.setApplicationId(APPLICATION_ID);
 
         mDashBoardChannel = new MyDashBoardChannel();
 
         mMediaRouter = MediaRouter.getInstance(getApplicationContext());
         mMediaRouteSelector = new MediaRouteSelector.Builder()
                 .addControlCategory(
-                        FlingMediaControlIntent
-                                .categoryForFling(APPLICATION_ID)).build();
+                        FlintMediaControlIntent
+                                .categoryForFlint(APPLICATION_ID)).build();
 
         mMediaRouterCallback = new MediaRouterCallback();
         mFlingListener = new FlingListener();
         mConnectionCallbacks = new ConnectionCallbacks();
-        mConnectionFailedListener = new ConnectionFailedListener();
-
+        
         mUserBox = (EditText) findViewById(R.id.user);
         mInfoBox = (EditText) findViewById(R.id.info);
         mSendBtn = (Button) findViewById(R.id.sendBtn);
@@ -190,7 +204,7 @@ public class DashBoardActivity extends ActionBarActivity {
             return;
         }
 
-        Fling.FlingApi.stopApplication(mApiClient).setResultCallback(
+        Flint.FlintApi.stopApplication(mApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status result) {
@@ -201,7 +215,7 @@ public class DashBoardActivity extends ActionBarActivity {
                 });
     }
 
-    private void setSelectedDevice(FlingDevice device) {
+    private void setSelectedDevice(FlintDevice device) {
         Log.d(TAG, "setSelectedDevice: " + device);
         mSelectedDevice = device;
 
@@ -236,12 +250,11 @@ public class DashBoardActivity extends ActionBarActivity {
     }
 
     private void connectApiClient() {
-        Fling.FlingOptions apiOptions = Fling.FlingOptions.builder(
+        Flint.FlintOptions apiOptions = Flint.FlintOptions.builder(
                 mSelectedDevice, mFlingListener).build();
-        mApiClient = new FlingManager.Builder(this)
-                .addApi(Fling.API, apiOptions)
+        mApiClient = new FlintManager.Builder(this)
+                .addApi(Flint.API, apiOptions)
                 .addConnectionCallbacks(mConnectionCallbacks)
-                .addOnConnectionFailedListener(mConnectionFailedListener)
                 .build();
         mApiClient.connect();
     }
@@ -259,7 +272,7 @@ public class DashBoardActivity extends ActionBarActivity {
     private void onRouteSelected(RouteInfo route) {
         Log.d(TAG, "onRouteSelected: " + route.getName());
 
-        FlingDevice device = FlingDevice.getFromBundle(route.getExtras());
+        FlintDevice device = FlintDevice.getFromBundle(route.getExtras());
         setSelectedDevice(device);
     }
 
@@ -273,10 +286,10 @@ public class DashBoardActivity extends ActionBarActivity {
         setSelectedDevice(null);
     }
 
-    private class FlingListener extends Fling.Listener {
+    private class FlingListener extends Flint.Listener {
         @Override
         public void onApplicationDisconnected(int statusCode) {
-            Log.d(TAG, "Fling.Listener.onApplicationDisconnected: "
+            Log.d(TAG, "Flint.Listener.onApplicationDisconnected: "
                     + statusCode);
 
             mSelectedDevice = null;
@@ -287,7 +300,7 @@ public class DashBoardActivity extends ActionBarActivity {
             }
 
             try {
-                Fling.FlingApi.removeMessageReceivedCallbacks(mApiClient,
+                Flint.FlintApi.removeMessageReceivedCallbacks(mApiClient,
                         mDashBoardChannel.getNamespace());
             } catch (IOException e) {
                 Log.w(TAG, "Exception while launching application", e);
@@ -296,7 +309,7 @@ public class DashBoardActivity extends ActionBarActivity {
     }
 
     private class ConnectionCallbacks implements
-            FlingManager.ConnectionCallbacks {
+            FlintManager.ConnectionCallbacks {
         @Override
         public void onConnectionSuspended(int cause) {
             Log.d(TAG, "ConnectionCallbacks.onConnectionSuspended");
@@ -305,13 +318,10 @@ public class DashBoardActivity extends ActionBarActivity {
         @Override
         public void onConnected(Bundle connectionHint) {
             Log.d(TAG, "ConnectionCallbacks.onConnected");
-            Fling.FlingApi.launchApplication(mApiClient, APP_URL)
+            Flint.FlintApi.launchApplication(mApiClient, APP_URL)
                     .setResultCallback(new ConnectionResultCallback());
         }
-    }
-
-    private class ConnectionFailedListener implements
-            FlingManager.OnConnectionFailedListener {
+        
         @Override
         public void onConnectionFailed(ConnectionResult result) {
             Log.d(TAG, "ConnectionFailedListener.onConnectionFailed");
@@ -329,7 +339,7 @@ public class DashBoardActivity extends ActionBarActivity {
             if (status.isSuccess()) {
                 Log.d(TAG, "ConnectionResultCallback: " + appMetaData.getData());
                 try {
-                    Fling.FlingApi
+                    Flint.FlintApi
                             .setMessageReceivedCallbacks(mApiClient,
                                     mDashBoardChannel.getNamespace(),
                                     mDashBoardChannel);
@@ -364,7 +374,7 @@ public class DashBoardActivity extends ActionBarActivity {
     }
 
     private class MyDashBoardChannel extends DashBoardChannel {
-        public void onMessageReceived(FlingDevice flingDevice,
+        public void onMessageReceived(FlintDevice flingDevice,
                 String namespace, String message) {
 
             Log.d(TAG, "onTextMessageReceived: " + message);
