@@ -141,13 +141,11 @@ public class DashBoardActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        finish();
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        setSelectedDevice(null);
         mMediaRouter.removeCallback(mMediaRouterCallback);
         super.onStop();
     }
