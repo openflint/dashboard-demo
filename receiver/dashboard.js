@@ -7,7 +7,7 @@ var fling = window.fling || {};
     DashBoard.NAMESPACE = 'urn:flint:tv.matchstick.demo.dashboard';
 
     function DashBoard() {
-        var self = this;
+        self = this;
 
         // all users
         self.users = {};
