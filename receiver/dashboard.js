@@ -18,6 +18,9 @@ var fling = window.fling || {};
         // all info colors
         self.infoColors = {};
 
+        // senders
+        self._senders = {};
+
         // message box total height
         self.textContainerHeight = 0;
 
@@ -28,22 +31,28 @@ var fling = window.fling || {};
 	    self.setTextMessageBoxHeight();
 
         // create Recerver manager object which can be used to send messages through messagebus.
-        self.dashBoardManager = new ReceiverManagerWrapper('~dashboard');
+        self.dashBoardManager = new FlintReceiverManager('~dashboard');
 
         // create messagebus which can send/recv namespace related messages
         self.messageBus = self.dashBoardManager.createMessageBus(DashBoard.NAMESPACE);
 
         // called when receiving messages in the specfic namespace
-        self.messageBus.on("message", function (senderId, message) {
+        self.messageBus.on("message", function (message, senderId) {
             var data = JSON.parse(message);
-            ("onMessage" in self) && self.onMessage(senderId, data);
+            ("onMessage" in self) && self.onMessage(data, senderId);
         });
 
         // callback function, which is called when user entered the game
-        self.messageBus.onsenderConnected = self.onSenderConnected.bind(this);
+        self.messageBus.on('senderConnected', function (senderId) {
+          self._senders[senderId] = senderId;
+          self.onSenderConnected(senderId);
+        });
 
         // called when user left
-        self.messageBus.onsenderDisconnected = self.onSenderDisconnected.bind(this);
+        self.messageBus.on('senderDisconnected', function(senderId) {
+          delete self._senders[senderId];
+          self.onSenderDisconnected(senderId);
+        });
 
         // ready to work
         self.dashBoardManager.open();
@@ -51,13 +60,16 @@ var fling = window.fling || {};
 
     // Adds event listening functions to DashBoard.prototype.
     DashBoard.prototype = {
+        getSenderList: function() {
+            return this._senders;
+        },
 
         /**
          * Message received event; determines event message and command, and
          * choose function to call based on them.
          * @param {event} event the event to be processed.
          */
-        onMessage: function (senderId, message) {
+        onMessage: function (message, senderId) {
             console.log('onMessage: ' + message + " senderId:" + senderId);
 
             if (message.command == 'show') {
