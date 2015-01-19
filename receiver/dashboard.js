@@ -88,7 +88,7 @@ var fling = window.fling || {};
          * @param {event} event the sender connected event.
          */
         onSenderConnected: function (event) {
-            console.log('onSenderConnected. Total number of senders: ' + Object.keys(this.dashBoardManager.getSenderList()).length);
+            console.log('onSenderConnected. Total number of senders: ' + Object.keys(self.getSenderList()).length);
         },
 
         /**
@@ -97,8 +97,8 @@ var fling = window.fling || {};
          * @param {event} event the sender disconnected event.
          */
         onSenderDisconnected: function (event) {
-            console.log('onSenderDisconnected. Total number of senders: ' + Object.keys(this.dashBoardManager.getSenderList()).length);
-            if (Object.keys(this.dashBoardManager.getSenderList()).length == 0) {
+            console.log('onSenderDisconnected. Total number of senders: ' + Object.keys(self.getSenderList()).length);
+            if (Object.keys(self.getSenderList()).length == 0) {
                 window.close();
             }
         },
@@ -207,7 +207,7 @@ var fling = window.fling || {};
          * @param {string} activeUser user who is talking now
          */
         updateUsers: function (activeUser) {
-            var senderIds = this.dashBoardManager.getSenderList();
+            var senderIds = self.getSenderList();
             var userNames = null;
             for (var senderId in senderIds) {
                 var user = this.users[senderId];
